@@ -12,6 +12,12 @@ export class Player extends Phaser.Group {
         this.fall();
     }
 
+    public die(direction: number): void {
+        console.log('die');
+        this.x += 200 * direction;
+        this.fall();
+    }
+
     public jump(): void {
         if (this.isJumping) return;
         this.isJumping = true;
