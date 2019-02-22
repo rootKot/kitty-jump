@@ -1,6 +1,7 @@
 export class Player extends Phaser.Group {
     public jumpSpeed = 10;
     public isJumping = true;
+    public isAlive = true;
     private player: Phaser.Sprite;
     private playerHeight = 100;
     private playerWidth = 80;
@@ -14,6 +15,7 @@ export class Player extends Phaser.Group {
 
     public die(direction: number): void {
         console.log('die');
+        this.isAlive = false;
         this.x += 200 * direction;
         this.fall();
     }

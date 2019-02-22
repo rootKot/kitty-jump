@@ -56,16 +56,15 @@ export class GameScreen extends Phaser.Group {
 
         const platformBounds = this.platforms.getTopPlatformBounds();
         if (platformBounds.contains(this.player.x, this.player.y)) {
-            console.log(platformBounds.top, this.player.y);
             if (platformBounds.y < this.player.y) {
                 this.player.die(this.platforms.getTopPlatformDirection());
             } else {
                 this.player.onGround();
                 this.platforms.stop();
             }
-        }
-
-        if (this.player.isJumping && this.player.y >= this.ground.groundY) {
+        } else if (platformBounds.y < this.player.y && this.platforms.stopped && this.player.isAlive) {
+            this.player.die(this.platforms.getTopPlatformDirection());
+        } else if (this.player.isJumping && this.player.y >= this.ground.groundY && this.player.isAlive) {
             this.player.onGround();
         }
     }

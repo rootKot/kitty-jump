@@ -1,9 +1,10 @@
 import Rectangle = PIXI.Rectangle;
 
 export class Platforms extends Phaser.Group {
-    private platform: Phaser.Sprite;
+    public platform: Phaser.Sprite;
+    public stopped = false;
     private platformWidth = 150;
-    private platformHeight = 100;
+    private platformHeight = 70;
     private speed = 15;
     private stopX: number;
     private startX: number;
@@ -37,12 +38,15 @@ export class Platforms extends Phaser.Group {
         this.groundY -= this.platformHeight;
         this.platform = this.game.add.sprite(this.startX, this.groundY, platformRectangle.generateTexture(), null, this);
         this.platform.anchor.set(0.5, 0);
+        this.stopped = false;
     }
 
     update(): void {
         if (this.platform.x < this.stopX) {
 
             this.platform.x += this.speed * this.direction;
+        } else {
+            this.stopped = true;
         }
     }
 
