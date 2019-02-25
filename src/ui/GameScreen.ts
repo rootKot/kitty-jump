@@ -10,6 +10,7 @@ export class GameScreen extends Phaser.Group {
     private ground: Ground;
     private keyBinds: KeyBinds;
     private platforms: Platforms;
+    private newGroundY: number;
 
     constructor(game: Phaser.Game, parent: PIXI.DisplayObjectContainer) {
         super(game, parent);
@@ -30,6 +31,7 @@ export class GameScreen extends Phaser.Group {
 
     private initGround(): void {
         this.ground = new Ground(this.game);
+        this.newGroundY = this.ground.groundY;
     }
 
     private initPlayer(): void {
@@ -52,7 +54,10 @@ export class GameScreen extends Phaser.Group {
     update(): void {
         super.update();
 
-        this.player.y += this.player.jumpSpeed;
+        if (this.player.isJumping) {
+
+            this.player.y += this.player.jumpSpeed + 0.5;
+        }
 
         const platformBounds = this.platforms.getTopPlatformBounds();
         if (platformBounds.contains(this.player.x, this.player.y)) {
@@ -60,11 +65,12 @@ export class GameScreen extends Phaser.Group {
                 this.player.die(this.platforms.getTopPlatformDirection());
             } else {
                 this.player.onGround();
+                this.newGroundY = platformBounds.y;
                 this.platforms.stop();
             }
         } else if (platformBounds.y < this.player.y && this.platforms.stopped && this.player.isAlive) {
             this.player.die(this.platforms.getTopPlatformDirection());
-        } else if (this.player.isJumping && this.player.y >= this.ground.groundY && this.player.isAlive) {
+        } else if (this.player.isJumping && this.player.y >= this.newGroundY && this.player.isAlive) {
             this.player.onGround();
         }
     }

@@ -4,8 +4,8 @@ export class Platforms extends Phaser.Group {
     public platform: Phaser.Sprite;
     public stopped = false;
     private platformWidth = 150;
-    private platformHeight = 70;
-    private speed = 15;
+    private platformHeight = 100;
+    private speed = 0;//15;
     private stopX: number;
     private startX: number;
     private direction = 1;

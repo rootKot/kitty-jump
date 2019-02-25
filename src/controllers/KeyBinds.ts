@@ -8,6 +8,9 @@ export class KeyBinds {
         this.onEvent = new Phaser.Signal();
         this.jumpKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         this.jumpKey.onDown.add(this.jump, this);
+
+        this.game.input.enabled = true;
+        this.game.input.onTap.add(this.jump, this);
     }
 
     private jump(): void {
