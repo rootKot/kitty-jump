@@ -1,6 +1,6 @@
 export class Player extends Phaser.Group {
-    public jumpPower = 10;
-    public jumpSpeed = 0;
+    public jumpPower = 0;
+    public jumpSpeed = 10;
     public isJumping = true;
     public isAlive = true;
     private player: Phaser.Sprite;
@@ -25,18 +25,19 @@ export class Player extends Phaser.Group {
         if (this.isJumping || !this.isAlive) return;
         this.isJumping = true;
         this.jumpTweenStart(0.8, 1.5, 80);
-        this.jumpSpeed = -10;
-        setTimeout(() => this.fall(), 350);
+        // this.jumpSpeed = -10;
+        this.jumpPower = -10;
+        // setTimeout(() => this.fall(), 350);
     }
 
     private fall(): void {
         this.jumpTweenStart(1.2, 0.7, 120);
-        this.jumpSpeed = 10;
+        // this.jumpSpeed = 10;
     }
 
     public onGround(): void {
         this.jumpTweenStart(1, 1, 80);
-        this.jumpSpeed = 0;
+        // this.jumpSpeed = 0;
         this.isJumping = false;
     }
 

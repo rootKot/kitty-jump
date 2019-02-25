@@ -5,7 +5,7 @@ export class Platforms extends Phaser.Group {
     public stopped = false;
     private platformWidth = 150;
     private platformHeight = 100;
-    private speed = 0;//15;
+    private speed = 15;
     private stopX: number;
     private startX: number;
     private direction = 1;

@@ -54,9 +54,11 @@ export class GameScreen extends Phaser.Group {
     update(): void {
         super.update();
 
+        // if (this.player.jumpPower)
         if (this.player.isJumping) {
 
-            this.player.y += this.player.jumpSpeed + 0.5;
+            this.player.jumpPower += 0.2;
+            this.player.y += this.player.jumpPower;
         }
 
         const platformBounds = this.platforms.getTopPlatformBounds();
