@@ -30,16 +30,18 @@ export class GameScreen extends Phaser.Group {
     }
 
     private initGround(): void {
-        this.ground = new Ground(this.game);
+        this.ground = new Ground(this.game, this);
         this.newGroundY = this.ground.groundY;
     }
 
     private initPlayer(): void {
-        this.player = new Player(this.game);
+        this.player = new Player(this.game, this);
+        this.player.x = this.game.world.centerX;
+        this.player.y = this.newGroundY;
     }
 
     private initPlatforms(): void {
-        this.platforms = new Platforms(this.ground.groundY, this.game);
+        this.platforms = new Platforms(this.ground.groundY, this.game, this);
     }
 
     private keyPressHandler(event: KeyPress): void {
@@ -51,19 +53,29 @@ export class GameScreen extends Phaser.Group {
         }
     }
 
+    private updateWorldY(y: number) {
+        this.platforms.y -= y;
+        this.player.y -= y;
+        this.ground.y -= y;
+        this.newGroundY -= y;
+        // this.y -= y;
+
+    }
+
     update(): void {
         super.update();
 
-        // if (this.player.jumpPower)
-        if (this.player.isJumping) {
+        console.log(this.y);
 
-            this.player.jumpPower += 0.2;
+        if (this.player.isJumping) {
+            this.player.jumpPower += 0.3;
             this.player.y += this.player.jumpPower;
+            if (this.player.y < this.game.world.centerY) this.updateWorldY(this.player.jumpPower);
         }
 
         const platformBounds = this.platforms.getTopPlatformBounds();
         if (platformBounds.contains(this.player.x, this.player.y)) {
-            if (platformBounds.y < this.player.y) {
+            if (platformBounds.y + 20 < this.player.y) {
                 this.player.die(this.platforms.getTopPlatformDirection());
             } else {
                 this.player.onGround();

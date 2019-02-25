@@ -4,8 +4,8 @@ export class Ground extends Phaser.Group {
     private readonly groundHeight = 2;
     private ground: Phaser.Graphics;
 
-    constructor(game: Phaser.Game) {
-        super(game, game.world);
+    constructor(game: Phaser.Game, parent: PIXI.DisplayObjectContainer) {
+        super(game, parent);
         this._groundY = game.world.height - 100;
         this.groundWidth = this.game.world.width;
         this.initGround();

@@ -8,4 +8,8 @@ export default class Game extends Phaser.State {
         this.game.camera.flash(0x000000, 1000);
         this.currentScreen = new GameScreen(this.game, this.game.world);
     }
+
+    public update(): void {
+        // this.currentScreen.y -= 1;
+    }
 }
