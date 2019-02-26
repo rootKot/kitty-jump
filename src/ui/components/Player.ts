@@ -18,9 +18,11 @@ export class Player extends Phaser.Group {
     public die(direction: number): void {
         console.log('die');
         this.isAlive = false;
-        this.x += 200 * direction;
+        this.x += 300 * direction;
         this.isJumping = true;
-        this.fall();
+        // this.fall();
+        this.jumpTweenStart(0.8, 1.3, 80);
+        this.jumpPower = 0;
     }
 
     public jump(): void {
@@ -39,6 +41,7 @@ export class Player extends Phaser.Group {
 
     public onGround(): void {
         this.jumpTweenStart(1, 1, 80);
+        console.log('on ground');
         this.isJumping = false;
     }
 
@@ -62,6 +65,7 @@ export class Player extends Phaser.Group {
         super.update();
 
         if (this.isJumping && !this.alreadyAnimated && this.jumpPower > 0) {
+            console.log('fall');
             this.fall();
         }
     }
