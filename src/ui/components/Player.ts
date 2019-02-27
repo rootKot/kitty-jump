@@ -1,11 +1,13 @@
+import {Spritesheets} from '../../assets';
+
 export class Player extends Phaser.Group {
     public jumpPower = 0;
     public jumpSpeed = 10;
     public isJumping = true;
     public isAlive = true;
     public player: Phaser.Sprite;
-    private playerHeight = 100;
-    private playerWidth = 80;
+    private playerWidth = 140;
+    private playerHeight = 210;
     private jumpTween: Phaser.Tween;
     private alreadyAnimated = false;
 
@@ -16,13 +18,12 @@ export class Player extends Phaser.Group {
     }
 
     public die(direction: number): void {
-        console.log('die');
         this.isAlive = false;
-        this.x += 300 * direction;
+        this.x += 250 * direction;
         this.isJumping = true;
-        // this.fall();
-        this.jumpTweenStart(0.8, 1.3, 80);
+        this.jumpTweenStart(1, 1, 80);
         this.jumpPower = 0;
+        this.player.play('die');
     }
 
     public jump(): void {
@@ -31,18 +32,20 @@ export class Player extends Phaser.Group {
         this.alreadyAnimated = false;
         this.jumpTweenStart(0.8, 1.3, 80);
         this.jumpPower = -12;
+        this.player.play('jump');
     }
 
     private fall(): void {
-        this.jumpTweenStart(1.2, 0.7, 120);
+        this.jumpTweenStart(1.1, 0.8, 120);
         this.alreadyAnimated = true;
         this.jumpPower = 0;
+        this.player.play('fall');
     }
 
     public onGround(): void {
         this.jumpTweenStart(1, 1, 80);
-        console.log('on ground');
         this.isJumping = false;
+        this.player.play('idle');
     }
 
     private jumpTweenStart(x: number, y: number, duration: number): void {
@@ -56,7 +59,15 @@ export class Player extends Phaser.Group {
         playerGraphics.beginFill(0xffffff);
         playerGraphics.drawRect(0, 0, this.playerWidth, this.playerHeight);
         playerGraphics.endFill();
-        this.player = this.game.add.sprite(0, 0, playerGraphics.generateTexture(), null, this);
+        // playerGraphics.generateTexture()
+        // this.player = this.game.add.sprite(0, 0, playerGraphics.generateTexture(), null, this);
+        this.player = this.game.add.sprite(0, 0, Spritesheets.SpritesPlayer140210.getName(), 0, this);
+        this.player.animations.add('idle', [0]);
+        this.player.animations.add('jump', [1]);
+        this.player.animations.add('fall', [2]);
+        this.player.animations.add('die', [3]);
+        this.player.play('idle');
+
         this.jumpTween = this.game.add.tween(this.scale);
         this.player.anchor.set(0.5, 1);
     }
@@ -64,7 +75,7 @@ export class Player extends Phaser.Group {
     update(): void {
         super.update();
 
-        if (this.isJumping && !this.alreadyAnimated && this.jumpPower > 0) {
+        if (this.isAlive && this.isJumping && !this.alreadyAnimated && this.jumpPower > 0) {
             console.log('fall');
             this.fall();
         }

@@ -1,5 +1,6 @@
 import Rectangle = PIXI.Rectangle;
 import {PlatformInfo} from '../../models/interfaces/PlatformInfo';
+import {Images} from '../../assets';
 
 
 export class Platforms extends Phaser.Group {
@@ -12,6 +13,7 @@ export class Platforms extends Phaser.Group {
     private direction = 1;
     private platformsArr: PlatformInfo[];
     private isWorking = true;
+    private platformDeepness = 15;
 
     constructor(private groundY: number, game: Phaser.Game, parent: PIXI.DisplayObjectContainer) {
         super(game, parent);
@@ -23,7 +25,7 @@ export class Platforms extends Phaser.Group {
 
     public getPlatformBounds(index: number): Rectangle {
         let bounds = this.platformsArr[index].platform.getBounds();
-        bounds.y -= this.game.world.y;
+        bounds.y -= this.game.world.y - this.platformDeepness;
         return bounds;
     }
 
@@ -59,9 +61,10 @@ export class Platforms extends Phaser.Group {
         platformRectangle.beginFill(0xf0f0f0);
         platformRectangle.drawRect(0, 0, this.platformWidth, this.platformHeight);
         platformRectangle.endFill();
+        // platformRectangle.generateTexture()
 
         this.groundY -= this.platformHeight + this.marginBottom;
-        const platform = this.game.add.sprite(this.startX, this.groundY, platformRectangle.generateTexture(), null, this);
+        const platform = this.game.add.sprite(this.startX, this.groundY, Images.ImagesCloud.getName(), null, this);
         platform.anchor.set(0.5, 0);
         this.platformsArr.push({
             speed: this.speed,
