@@ -11,7 +11,6 @@ export class GameScreen extends Phaser.Group {
     private ground: Ground;
     private keyBinds: KeyBinds;
     private platforms: Platforms;
-    private newGroundY: number;
 
     constructor(game: Phaser.Game, parent: PIXI.DisplayObjectContainer) {
         super(game, parent);
@@ -32,13 +31,12 @@ export class GameScreen extends Phaser.Group {
 
     private initGround(): void {
         this.ground = new Ground(this.game, this);
-        this.newGroundY = this.ground.groundY;
     }
 
     private initPlayer(): void {
         this.player = new Player(this.game, this);
         this.player.x = this.game.world.centerX;
-        this.player.y = this.newGroundY;
+        this.player.y = this.ground.groundY;
     }
 
     private initPlatforms(): void {
@@ -58,9 +56,13 @@ export class GameScreen extends Phaser.Group {
         this.platforms.y -= y;
         this.player.y -= y;
         this.ground.y -= y;
-        this.newGroundY -= y;
         // this.y -= y;
 
+    }
+
+    private gameOver(platformDirection: number): void {
+        this.player.die(platformDirection);
+        this.platforms.stopAll();
     }
 
     private checkPlatformCollision(platformObj: PlatformInfo, index: number): void {
@@ -68,27 +70,23 @@ export class GameScreen extends Phaser.Group {
         if (platformBounds.contains(this.player.x, this.player.y)) {
             if (platformBounds.y + 20 < this.player.y) {
                 // player die by touching the platform side
-                this.player.die(platformObj.direction);
-                this.platforms.stopAll();
+                this.gameOver(platformObj.direction);
             } else if (this.player.isJumping) {
                 // player is on platform
                 this.player.onGround();
-                this.newGroundY = platformBounds.y;
                 this.player.y = platformBounds.y;
                 this.platforms.stop(index);
             }
-        }
-        else if (platformBounds.y < this.player.y && platformObj.stopped && this.player.isAlive) {
+        } else if (platformBounds.y < this.player.y && platformObj.stopped && this.player.isAlive) {
             // player die by touching the platform side
-            this.player.die(platformObj.direction);
-            this.platforms.stopAll();
+            this.gameOver(platformObj.direction);
         }
     }
 
     update(): void {
         super.update();
 
-        if (!this.player.isAlive && this.player.y > this.game.camera.height + this.player.height ) {
+        if (!this.player.isAlive && this.player.y > this.game.camera.height + this.player.height) {
             return;
         }
 
@@ -102,7 +100,7 @@ export class GameScreen extends Phaser.Group {
             this.checkPlatformCollision(platformObj, index);
         });
 
-        if (this.player.isJumping && this.player.y >= this.newGroundY && this.player.isAlive) {
+        if (this.player.isJumping && this.player.y >= this.ground.groundY && this.player.isAlive) {
             this.player.onGround();
         }
     }

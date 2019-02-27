@@ -5,6 +5,7 @@ import {PlatformInfo} from '../../models/interfaces/PlatformInfo';
 export class Platforms extends Phaser.Group {
     private platformWidth = 180;
     private platformHeight = 100;
+    private marginBottom = 10;
     private speed = 10;
     private stopX: number;
     private startX: number;
@@ -32,6 +33,9 @@ export class Platforms extends Phaser.Group {
 
     public stop(index: number): void {
         this.platformsArr[index].stopped = true;
+
+        const platformShakeTween = this.game.add.tween(this.platformsArr[index].platform.scale);
+        platformShakeTween.to({x: 1.05, y: 1.05}, 20, Phaser.Easing.Linear.None, true, 0, 0, true);
     }
 
     public stopAll(): void {
@@ -56,7 +60,7 @@ export class Platforms extends Phaser.Group {
         platformRectangle.drawRect(0, 0, this.platformWidth, this.platformHeight);
         platformRectangle.endFill();
 
-        this.groundY -= this.platformHeight;
+        this.groundY -= this.platformHeight + this.marginBottom;
         const platform = this.game.add.sprite(this.startX, this.groundY, platformRectangle.generateTexture(), null, this);
         platform.anchor.set(0.5, 0);
         this.platformsArr.push({
