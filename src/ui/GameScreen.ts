@@ -4,7 +4,8 @@ import {KeyBinds} from '../controllers/KeyBinds';
 import {KeyPress} from '../enums/Events';
 import {Platforms} from './components/Platforms';
 import {PlatformInfo} from '../models/interfaces/PlatformInfo';
-import {Images} from '../assets';
+import {Audio} from '../assets';
+import {Background} from './components/Background';
 
 export class GameScreen extends Phaser.Group {
     public onEvent: Phaser.Signal;
@@ -12,7 +13,8 @@ export class GameScreen extends Phaser.Group {
     private ground: Ground;
     private keyBinds: KeyBinds;
     private platforms: Platforms;
-    private backgroundClouds: Phaser.Sprite;
+    private background: Background;
+    private backgroundMusic: Phaser.Sound;
 
     constructor(game: Phaser.Game, parent: PIXI.DisplayObjectContainer) {
         super(game, parent);
@@ -20,15 +22,16 @@ export class GameScreen extends Phaser.Group {
     }
 
     private initialize(): void {
-        this.game.add.sprite(0, 0, Images.ImagesWallhaven.getName(), null, this);
-        this.backgroundClouds = this.game.add.sprite(0, 0, Images.ImagesClouds.getName(), null, this);
-        this.backgroundClouds.x = this.game.world.centerX - this.backgroundClouds.width / 2;
-        this.backgroundClouds.y = this.game.world.centerY - this.backgroundClouds.height;
-
-        this.initGround();
+        this.initBackgroundMusic();
+        this.initBackground();
         this.initPlayer();
         this.initKeyBinds();
         this.initPlatforms();
+    }
+
+    private initBackgroundMusic(): void {
+        this.backgroundMusic = this.game.sound.add(Audio.MusicNight.getName(), 2, true);
+        this.backgroundMusic.play();
     }
 
     private initKeyBinds(): void {
@@ -36,7 +39,8 @@ export class GameScreen extends Phaser.Group {
         this.keyBinds.onEvent.add(this.keyPressHandler, this);
     }
 
-    private initGround(): void {
+    private initBackground(): void {
+        this.background = new Background(this.game, this);
         this.ground = new Ground(this.game, this);
     }
 
@@ -63,13 +67,14 @@ export class GameScreen extends Phaser.Group {
         this.platforms.y -= y;
         this.player.y -= y;
         this.ground.y -= y;
-        this.backgroundClouds.y -= y / 2;
+        this.background.clouds.y -= y / 2;
 
     }
 
     private gameOver(platformDirection: number): void {
         this.player.die(platformDirection);
         this.platforms.stopAll();
+        this.backgroundMusic.stop();
     }
 
     private checkPlatformCollision(platformObj: PlatformInfo, index: number): void {

@@ -21,6 +21,21 @@ export namespace Images {
 
         static getPNG(): string { return require('assets/images/daySky.png'); }
     }
+    export class ImagesGround {
+        static getName(): string { return 'ground'; }
+
+        static getPNG(): string { return require('assets/images/ground.png'); }
+    }
+    export class ImagesSky1 {
+        static getName(): string { return 'sky1'; }
+
+        static getPNG(): string { return require('assets/images/sky1.png'); }
+    }
+    export class ImagesWallhavenMoon {
+        static getName(): string { return 'wallhaven-moon'; }
+
+        static getPNG(): string { return require('assets/images/wallhaven-moon.png'); }
+    }
     export class ImagesWallhaven {
         static getName(): string { return 'wallhaven'; }
 
@@ -29,6 +44,16 @@ export namespace Images {
 }
 
 export namespace Spritesheets {
+    export class SpritesClouds20080 {
+        static getName(): string { return 'clouds.[200,80]'; }
+
+        static getPNG(): string { return require('assets/sprites/clouds.[200,80].png'); }
+        static getFrameWidth(): number { return 200; }
+        static getFrameHeight(): number { return 80; }
+        static getFrameMax(): number { return -1; }
+        static getMargin(): number { return 0; }
+        static getSpacing(): number { return 0; }
+    }
     export class SpritesPlayer140210 {
         static getName(): string { return 'player.[140,210]'; }
 
@@ -46,7 +71,26 @@ export namespace Atlases {
 }
 
 export namespace Audio {
-    class IExistSoTypeScriptWillNotComplainAboutAnEmptyNamespace {}
+    export class MusicNight {
+        static getName(): string { return 'night'; }
+
+        static getMP3(): string { return require('assets/music/night.mp3'); }
+    }
+    export class SoundsJump {
+        static getName(): string { return 'jump'; }
+
+        static getMP3(): string { return require('assets/sounds/jump.mp3'); }
+    }
+    export class SoundsLand {
+        static getName(): string { return 'land'; }
+
+        static getMP3(): string { return require('assets/sounds/land.mp3'); }
+    }
+    export class SoundsLost {
+        static getName(): string { return 'lost'; }
+
+        static getMP3(): string { return require('assets/sounds/lost.mp3'); }
+    }
 }
 
 export namespace Audiosprites {

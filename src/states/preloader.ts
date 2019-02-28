@@ -1,5 +1,6 @@
 import * as Assets from '../assets';
 import * as AssetUtils from '../utils/assetUtils';
+import {AudioManager} from '../managers/AudioManager';
 
 export default class Preloader extends Phaser.State {
     private preloadBarSprite!: Phaser.Sprite;
@@ -21,6 +22,7 @@ export default class Preloader extends Phaser.State {
     }
 
     private loadTitle(): void {
+        AudioManager.i.setGame(this.game);
         this.game.state.start('game');
     }
 }
