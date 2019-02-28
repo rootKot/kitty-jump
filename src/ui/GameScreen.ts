@@ -20,7 +20,7 @@ export class GameScreen extends Phaser.Group {
     }
 
     private initialize(): void {
-        this.game.add.sprite(0, 0, Images.ImagesDaySky.getName(), null, this);
+        this.game.add.sprite(0, 0, Images.ImagesWallhaven.getName(), null, this);
         this.backgroundClouds = this.game.add.sprite(0, 0, Images.ImagesClouds.getName(), null, this);
         this.backgroundClouds.x = this.game.world.centerX - this.backgroundClouds.width / 2;
         this.backgroundClouds.y = this.game.world.centerY - this.backgroundClouds.height;

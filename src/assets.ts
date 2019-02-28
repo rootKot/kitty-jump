@@ -21,6 +21,11 @@ export namespace Images {
 
         static getPNG(): string { return require('assets/images/daySky.png'); }
     }
+    export class ImagesWallhaven {
+        static getName(): string { return 'wallhaven'; }
+
+        static getPNG(): string { return require('assets/images/wallhaven.png'); }
+    }
 }
 
 export namespace Spritesheets {
