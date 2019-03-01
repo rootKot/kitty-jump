@@ -1,4 +1,4 @@
-import {Spritesheets, Audio} from '../../assets';
+import {Spritesheets, Audio, Audiosprites} from '../../assets';
 import {AudioManager} from '../../managers/AudioManager';
 
 export class Player extends Phaser.Group {
@@ -24,7 +24,7 @@ export class Player extends Phaser.Group {
         this.isJumping = true;
         this.jumpTweenStart(1, 1, 80);
         this.jumpPower = 0;
-        AudioManager.i.play(Audio.SoundsLost.getName());
+        AudioManager.i.play(Audiosprites.AudiospritesSounds.Sprites.Jump);
         this.player.play('die');
     }
 

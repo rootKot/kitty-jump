@@ -1,10 +1,9 @@
-import {Audio} from '../assets';
+import {Audiosprites} from '../assets';
 
 export class AudioManager {
     private static _instance: AudioManager;
     private game: Phaser.Game;
-    private sounds: {[name: string]: Phaser.Sound} = {};
-
+    private audioSprite: Phaser.AudioSprite;
 
     public static get i(): AudioManager {
         if (!AudioManager._instance) AudioManager._instance = new AudioManager();
@@ -16,12 +15,15 @@ export class AudioManager {
         this.initSounds();
     }
 
-    public play(name: string): void {
-        this.sounds[name].play();
+    public play(name: string, volume: number = 1): void {
+        this.audioSprite.play(name, volume);
+    }
+
+    public stop(name: string): void {
+        this.audioSprite.stop(name);
     }
 
     private initSounds(): void {
-        this.sounds[Audio.SoundsLand.getName()] = this.game.sound.add(Audio.SoundsLand.getName());
-        this.sounds[Audio.SoundsLost.getName()] = this.game.sound.add(Audio.SoundsLost.getName());
+        this.audioSprite = this.game.sound.addSprite(Audiosprites.AudiospritesSounds.getName());
     }
 }

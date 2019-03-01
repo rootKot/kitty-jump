@@ -1,6 +1,6 @@
 import Rectangle = PIXI.Rectangle;
 import {PlatformInfo} from '../../models/interfaces/PlatformInfo';
-import {Audio, Spritesheets} from '../../assets';
+import {Audiosprites, Spritesheets} from '../../assets';
 import {AudioManager} from '../../managers/AudioManager';
 
 
@@ -36,7 +36,7 @@ export class Platforms extends Phaser.Group {
 
     public stop(index: number): void {
         this.platformsArr[index].stopped = true;
-        AudioManager.i.play(Audio.SoundsLand.getName());
+        AudioManager.i.play(Audiosprites.AudiospritesSounds.Sprites.Land);
 
         const platformShakeTween = this.game.add.tween(this.platformsArr[index].platform.scale);
         platformShakeTween.to({x: 1.05, y: 1.05}, 20, Phaser.Easing.Linear.None, true, 0, 0, true);

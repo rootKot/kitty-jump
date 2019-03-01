@@ -1,20 +1,24 @@
 import {Ground} from './components/Ground';
 import {Player} from './components/Player';
 import {KeyBinds} from '../controllers/KeyBinds';
-import {KeyPress} from '../enums/Events';
+import {GameState, KeyPress} from '../enums/Events';
 import {Platforms} from './components/Platforms';
 import {PlatformInfo} from '../models/interfaces/PlatformInfo';
-import {Audio} from '../assets';
+import {Audiosprites, Images} from '../assets';
 import {Background} from './components/Background';
+import {GameOverPopup} from './components/GameOverPopup';
+import {AudioManager} from '../managers/AudioManager';
+import {Score} from './components/Score';
 
 export class GameScreen extends Phaser.Group {
     public onEvent: Phaser.Signal;
     private player: Player;
     private ground: Ground;
-    private keyBinds: KeyBinds;
     private platforms: Platforms;
     private background: Background;
-    private backgroundMusic: Phaser.Sound;
+    private score: Score;
+    private gameOverPopup: GameOverPopup;
+    private popupTween: Phaser.Tween;
 
     constructor(game: Phaser.Game, parent: PIXI.DisplayObjectContainer) {
         super(game, parent);
@@ -22,21 +26,21 @@ export class GameScreen extends Phaser.Group {
     }
 
     private initialize(): void {
-        this.initBackgroundMusic();
+        this.playBackgroundMusic();
         this.initBackground();
         this.initPlayer();
-        this.initKeyBinds();
         this.initPlatforms();
+        this.initScore();
+        this.initEventsHandler();
     }
 
-    private initBackgroundMusic(): void {
-        this.backgroundMusic = this.game.sound.add(Audio.MusicNight.getName(), 2, true);
-        this.backgroundMusic.play();
+    private playBackgroundMusic(): void {
+        AudioManager.i.play(Audiosprites.AudiospritesSounds.Sprites.NightMusic, 2);
     }
 
-    private initKeyBinds(): void {
-        this.keyBinds = new KeyBinds(this.game);
-        this.keyBinds.onEvent.add(this.keyPressHandler, this);
+    private initEventsHandler(): void {
+        const keyBinds = new KeyBinds(this.game);
+        keyBinds.onEvent.add(this.keyPressHandler, this);
     }
 
     private initBackground(): void {
@@ -54,10 +58,23 @@ export class GameScreen extends Phaser.Group {
         this.platforms = new Platforms(this.ground.groundY, this.game, this);
     }
 
+    private initScore(): void {
+        this.score = new Score(this.game, this);
+    }
+
     private keyPressHandler(event: KeyPress): void {
         switch (event) {
             case KeyPress.Jump: {
                 this.player.jump();
+                break;
+            }
+        }
+    }
+
+    private gameStateEventsHandler(event: GameState): void {
+        switch (event) {
+            case GameState.Replay: {
+                this.replay();
                 break;
             }
         }
@@ -74,7 +91,32 @@ export class GameScreen extends Phaser.Group {
     private gameOver(platformDirection: number): void {
         this.player.die(platformDirection);
         this.platforms.stopAll();
-        this.backgroundMusic.stop();
+        AudioManager.i.stop(Audiosprites.AudiospritesSounds.Sprites.NightMusic);
+
+        this.gameOverPopup = new GameOverPopup(this.game, this);
+        this.gameOverPopup.onEvent.add(this.gameStateEventsHandler, this);
+
+        const x = this.game.world.centerX - this.gameOverPopup.width / 2;
+        this.gameOverPopup.position.set(x, 0 - this.gameOverPopup.height);
+
+        const marginTop = this.game.world.centerY - this.gameOverPopup.height / 1.5;
+        const popupTween = this.game.add.tween(this.gameOverPopup);
+        popupTween.to({y: marginTop}, 500, Phaser.Easing.Elastic.Out, true, 1000);
+    }
+
+    private replay(): void {
+        const popupTween = this.game.add.tween(this.gameOverPopup);
+        popupTween.to({y: 0 - this.gameOverPopup.height}, 500, Phaser.Easing.Elastic.In, true, 0);
+
+        setTimeout(() => {
+            this.platforms.destroy();
+            this.background.destroy();
+            this.player.destroy();
+            this.gameOverPopup.destroy();
+            this.gameOverPopup.onEvent.dispose();
+            // this.onEvent.dispose();
+            this.game.state.start('game');
+        }, 1000);
     }
 
     private checkPlatformCollision(platformObj: PlatformInfo, index: number): void {
@@ -86,6 +128,7 @@ export class GameScreen extends Phaser.Group {
             } else if (this.player.isJumping) {
                 // player is on platform
                 this.player.onGround();
+                this.score.addScore();
                 this.player.y = platformBounds.y;
                 this.platforms.stop(index);
             }

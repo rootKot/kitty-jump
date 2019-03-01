@@ -1,0 +1,30 @@
+{
+  "resources": [
+    "assets/audiosprites/sounds.ogg",
+    "assets/audiosprites/sounds.m4a",
+    "assets/audiosprites/sounds.mp3",
+    "assets/audiosprites/sounds.ac3"
+  ],
+  "spritemap": {
+    "jump": {
+      "start": 0,
+      "end": 1.9440136054421768,
+      "loop": false
+    },
+    "land": {
+      "start": 3,
+      "end": 3.496326530612245,
+      "loop": false
+    },
+    "lost": {
+      "start": 5,
+      "end": 6.071020408163266,
+      "loop": false
+    },
+    "nightMusic": {
+      "start": 8,
+      "end": 292.9040136054422,
+      "loop": false
+    }
+  }
+}
