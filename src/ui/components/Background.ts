@@ -1,14 +1,36 @@
 import {Images} from '../../assets';
 
 export class Background extends Phaser.Group {
-    public clouds: Phaser.Sprite;
+    private currentClouds: Phaser.Sprite;
+    private upcomingClouds: Phaser.Sprite;
 
     constructor(game: Phaser.Game, parent: PIXI.DisplayObjectContainer) {
         super(game, parent);
         this.game.add.sprite(0, 0, Images.ImagesSky1.getName(), null, this);
+        this.currentClouds = this.createClouds();
+        this.upcomingClouds = this.createClouds(true);
+    }
 
-        this.clouds = this.game.add.sprite(0, 0, Images.ImagesClouds.getName(), null, this);
-        this.clouds.x = this.game.world.centerX - this.clouds.width / 2;
-        this.clouds.y = this.game.world.centerY - this.clouds.height;
+    public changeY(y: number): void {
+        this.currentClouds.y -= y;
+        this.upcomingClouds.y -= y;
+
+        if (this.currentClouds.y > 0) { // clouds ending
+            this.upcomingClouds.y = this.currentClouds.y;
+            this.currentClouds.y = this.upcomingClouds.y - this.currentClouds.height - 100;
+        } else if (this.upcomingClouds.y > this.game.height) { // clouds under screen
+            this.upcomingClouds.y = this.currentClouds.y - this.upcomingClouds.height;
+        }
+    }
+
+    private createClouds(upcoming: boolean = false): Phaser.Sprite {
+        const clouds = this.game.add.sprite(0, 0, Images.ImagesClouds.getName(), null, this);
+        clouds.x = this.game.world.centerX - clouds.width / 2;
+        if (upcoming) {
+            clouds.y = this.currentClouds.y - clouds.height;
+        } else {
+            clouds.y = this.game.world.centerY - clouds.height;
+        }
+        return clouds;
     }
 }

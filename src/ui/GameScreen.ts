@@ -4,21 +4,22 @@ import {KeyBinds} from '../controllers/KeyBinds';
 import {GameState, KeyPress} from '../enums/Events';
 import {Platforms} from './components/Platforms';
 import {PlatformInfo} from '../models/interfaces/PlatformInfo';
-import {Audiosprites, Images} from '../assets';
+import {Audiosprites, CustomWebFonts} from '../assets';
 import {Background} from './components/Background';
 import {GameOverPopup} from './components/GameOverPopup';
 import {AudioManager} from '../managers/AudioManager';
 import {Score} from './components/Score';
 
 export class GameScreen extends Phaser.Group {
-    public onEvent: Phaser.Signal;
     private player: Player;
     private ground: Ground;
     private platforms: Platforms;
     private background: Background;
     private score: Score;
     private gameOverPopup: GameOverPopup;
-    private popupTween: Phaser.Tween;
+    private keyBinds: KeyBinds;
+    private tapToStartText: Phaser.Text;
+    private gameStarted = false;
 
     constructor(game: Phaser.Game, parent: PIXI.DisplayObjectContainer) {
         super(game, parent);
@@ -29,9 +30,19 @@ export class GameScreen extends Phaser.Group {
         this.playBackgroundMusic();
         this.initBackground();
         this.initPlayer();
-        this.initPlatforms();
         this.initScore();
         this.initEventsHandler();
+        this.initTapToStart();
+    }
+
+    private initTapToStart(): void {
+        const fontStyle = {
+            fontSize: 40,
+            fill: '#ffffff',
+            font: CustomWebFonts.FontsFreeh521Freeh521.getName()
+        };
+        this.tapToStartText = this.game.add.text(0, 300, 'tap to start', fontStyle, this);
+        this.tapToStartText.x = this.game.world.centerX - this.tapToStartText.width / 2;
     }
 
     private playBackgroundMusic(): void {
@@ -39,8 +50,8 @@ export class GameScreen extends Phaser.Group {
     }
 
     private initEventsHandler(): void {
-        const keyBinds = new KeyBinds(this.game);
-        keyBinds.onEvent.add(this.keyPressHandler, this);
+        this.keyBinds = new KeyBinds(this.game);
+        this.keyBinds.onEvent.add(this.keyPressHandler, this);
     }
 
     private initBackground(): void {
@@ -63,10 +74,11 @@ export class GameScreen extends Phaser.Group {
     }
 
     private keyPressHandler(event: KeyPress): void {
-        switch (event) {
-            case KeyPress.Jump: {
+        if (event === KeyPress.Jump) {
+            if (this.gameStarted === false) {
+                this.startGame();
+            } else {
                 this.player.jump();
-                break;
             }
         }
     }
@@ -84,8 +96,16 @@ export class GameScreen extends Phaser.Group {
         this.platforms.y -= y;
         this.player.y -= y;
         this.ground.y -= y;
-        this.background.clouds.y -= y / 2;
+        this.background.changeY(y / 2);
 
+    }
+
+    private startGame(): void {
+        this.gameStarted = true;
+        this.initPlatforms();
+
+        this.game.add.tween(this.tapToStartText).to(
+            {y: 0 - this.tapToStartText.height}, 500, Phaser.Easing.Elastic.In, true);
     }
 
     private gameOver(platformDirection: number): void {
@@ -108,39 +128,38 @@ export class GameScreen extends Phaser.Group {
         const popupTween = this.game.add.tween(this.gameOverPopup);
         popupTween.to({y: 0 - this.gameOverPopup.height}, 500, Phaser.Easing.Elastic.In, true, 0);
 
-        setTimeout(() => {
-            this.platforms.destroy();
-            this.background.destroy();
-            this.player.destroy();
-            this.gameOverPopup.destroy();
-            this.gameOverPopup.onEvent.dispose();
-            // this.onEvent.dispose();
+        this.game.time.events.add(Phaser.Timer.SECOND, () => {
+            this.keyBinds.destroy();
             this.game.state.start('game');
-        }, 1000);
+        }, this);
     }
 
     private checkPlatformCollision(platformObj: PlatformInfo, index: number): void {
-        const platformBounds = this.platforms.getPlatformBounds(index);
-        if (platformBounds.contains(this.player.x, this.player.y)) {
-            if (platformBounds.y + 20 < this.player.y) {
-                // player die by touching the platform side
-                this.gameOver(platformObj.direction);
-            } else if (this.player.isJumping) {
-                // player is on platform
-                this.player.onGround();
-                this.score.addScore();
-                this.player.y = platformBounds.y;
-                this.platforms.stop(index);
+        // const platformBounds = this.platforms.getPlatformBounds(index);
+
+        if (((this.player.x + this.player.player.width / 2) > (platformObj.platform.worldPosition.x - platformObj.platform.width / 2)) &&
+            ((this.player.x - this.player.player.width / 2) < (platformObj.platform.worldPosition.x + platformObj.platform.width / 2))) {
+
+            if ((this.player.y) > (platformObj.platform.worldPosition.y) &&
+                ((this.player.y - this.player.player.height) < (platformObj.platform.worldPosition.y + platformObj.platform.height))) {
+
+                if (this.player.y < platformObj.platform.worldPosition.y + 20) {
+                    if (this.player.isJumping) {
+                        this.player.onGround();
+                        this.score.addScore();
+                        this.player.y = platformObj.platform.worldPosition.y;
+                        this.platforms.stop(index);
+                    }
+                } else {
+                    this.gameOver(platformObj.direction);
+                }
             }
-        } else if (platformBounds.y < this.player.y && platformObj.stopped && this.player.isAlive) {
-            // player die by touching the platform side and player in same Y
-            this.gameOver(platformObj.direction);
         }
     }
 
     update(): void {
         super.update();
-
+        if (!this.gameStarted) return;
         if (!this.player.isAlive && this.player.y > this.game.camera.height + this.player.height) {
             return;
         }

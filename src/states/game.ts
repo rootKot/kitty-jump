@@ -10,6 +10,5 @@ export default class Game extends Phaser.State {
     }
 
     public update(): void {
-        // this.currentScreen.y -= 1;
     }
 }

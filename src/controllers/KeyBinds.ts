@@ -13,6 +13,10 @@ export class KeyBinds {
         this.game.input.onTap.add(this.jump, this);
     }
 
+    public destroy(): void {
+        this.onEvent.dispose();
+    }
+
     private jump(): void {
         this.onEvent.dispatch(KeyPress.Jump);
     }

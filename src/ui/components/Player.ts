@@ -15,7 +15,6 @@ export class Player extends Phaser.Group {
     constructor(game: Phaser.Game, parent: PIXI.DisplayObjectContainer) {
         super(game, parent);
         this.initialize();
-        this.fall();
     }
 
     public die(direction: number): void {
@@ -57,12 +56,6 @@ export class Player extends Phaser.Group {
     }
 
     private initialize(): void {
-        const playerGraphics = new Phaser.Graphics(this.game, 0, 0);
-        playerGraphics.beginFill(0xffffff);
-        playerGraphics.drawRect(0, 0, this.playerWidth, this.playerHeight);
-        playerGraphics.endFill();
-        // playerGraphics.generateTexture()
-        // this.player = this.game.add.sprite(0, 0, playerGraphics.generateTexture(), null, this);
         this.player = this.game.add.sprite(0, 0, Spritesheets.SpritesPlayer140210.getName(), 0, this);
         this.player.animations.add('idle', [0]);
         this.player.animations.add('jump', [1]);

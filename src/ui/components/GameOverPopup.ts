@@ -41,4 +41,9 @@ export class GameOverPopup extends Phaser.Group {
     private replayBtnListener(): void {
         this.onEvent.dispatch(GameState.Replay);
     }
+
+    destroy(destroyChildren?: boolean, soft?: boolean): void {
+        super.destroy(destroyChildren, soft);
+        this.onEvent.dispose();
+    }
 }

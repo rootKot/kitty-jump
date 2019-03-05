@@ -21,11 +21,12 @@ export class Platforms extends Phaser.Group {
         this.startX = 0 - this.platformWidth;
         this.stopX = this.game.world.centerX;
         this.platformsArr = [];
-        this.createPlatform();
+        this.game.time.events.loop(Phaser.Timer.SECOND * 1.2, this.createPlatform, this);
     }
 
     public getPlatformBounds(index: number): Rectangle {
         let bounds = this.platformsArr[index].platform.getBounds();
+        bounds.x = this.platformsArr[index].platform.worldPosition.x;
         bounds.y -= this.game.world.y - this.platformDeepness;
         return bounds;
     }
@@ -59,14 +60,7 @@ export class Platforms extends Phaser.Group {
         if (!this.isWorking) return;
 
         this.changeDirection();
-        const platformRectangle = new Phaser.Graphics(this.game, 0, 0);
-        platformRectangle.beginFill(0xf0f0f0);
-        platformRectangle.drawRect(0, 0, this.platformWidth, this.platformHeight);
-        platformRectangle.endFill();
-        // platformRectangle.generateTexture()
-
         const frame = this.game.rnd.integerInRange(0, 3);
-        console.log(frame);
         this.groundY -= this.platformHeight + this.marginBottom;
         const platform = this.game.add.sprite(this.startX, this.groundY, Spritesheets.SpritesClouds20080.getName(), frame, this);
         platform.anchor.set(0.5, 0);
@@ -76,8 +70,6 @@ export class Platforms extends Phaser.Group {
             platform: platform,
             stopped: false
         });
-
-        this.game.time.events.add(Phaser.Timer.SECOND * 1.2, this.createPlatform, this);
     }
 
     update(): void {
