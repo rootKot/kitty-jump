@@ -1,11 +1,6 @@
 /* AUTO GENERATED FILE. DO NOT MODIFY. YOU WILL LOSE YOUR CHANGES ON BUILD. */
 
 export namespace Images {
-    export class ImagesBackgroundTemplate {
-        static getName(): string { return 'background_template'; }
-
-        static getPNG(): string { return require('assets/images/background_template.png'); }
-    }
     export class ImagesCloud {
         static getName(): string { return 'cloud'; }
 
@@ -15,11 +10,6 @@ export namespace Images {
         static getName(): string { return 'clouds'; }
 
         static getPNG(): string { return require('assets/images/clouds.png'); }
-    }
-    export class ImagesDaySky {
-        static getName(): string { return 'daySky'; }
-
-        static getPNG(): string { return require('assets/images/daySky.png'); }
     }
     export class ImagesGameOver {
         static getName(): string { return 'gameOver'; }
@@ -40,16 +30,6 @@ export namespace Images {
         static getName(): string { return 'sky1'; }
 
         static getPNG(): string { return require('assets/images/sky1.png'); }
-    }
-    export class ImagesWallhavenMoon {
-        static getName(): string { return 'wallhaven-moon'; }
-
-        static getPNG(): string { return require('assets/images/wallhaven-moon.png'); }
-    }
-    export class ImagesWallhaven {
-        static getName(): string { return 'wallhaven'; }
-
-        static getPNG(): string { return require('assets/images/wallhaven.png'); }
     }
 }
 

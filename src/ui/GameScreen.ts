@@ -136,18 +136,19 @@ export class GameScreen extends Phaser.Group {
 
     private checkPlatformCollision(platformObj: PlatformInfo, index: number): void {
         // const platformBounds = this.platforms.getPlatformBounds(index);
+        const platformDeepness = this.platforms.getDeepness();
 
-        if (((this.player.x + this.player.player.width / 2) > (platformObj.platform.worldPosition.x - platformObj.platform.width / 2)) &&
-            ((this.player.x - this.player.player.width / 2) < (platformObj.platform.worldPosition.x + platformObj.platform.width / 2))) {
+        if (((this.player.x + this.player.player.width / 2) > (platformObj.platform.worldPosition.x - platformObj.platform.width / 2 + platformDeepness.x)) &&
+            ((this.player.x - this.player.player.width / 2) < (platformObj.platform.worldPosition.x + platformObj.platform.width / 2 - platformDeepness.x))) {
 
-            if ((this.player.y) > (platformObj.platform.worldPosition.y) &&
+            if ((this.player.y) > (platformObj.platform.worldPosition.y + platformDeepness.y) &&
                 ((this.player.y - this.player.player.height) < (platformObj.platform.worldPosition.y + platformObj.platform.height))) {
 
-                if (this.player.y < platformObj.platform.worldPosition.y + 20) {
+                if (this.player.y < platformObj.platform.worldPosition.y + platformDeepness.y + 20) {
                     if (this.player.isJumping) {
                         this.player.onGround();
                         this.score.addScore();
-                        this.player.y = platformObj.platform.worldPosition.y;
+                        this.player.y = platformObj.platform.worldPosition.y + platformDeepness.y;
                         this.platforms.stop(index);
                     }
                 } else {

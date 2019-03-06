@@ -26,6 +26,7 @@ export class Background extends Phaser.Group {
     private createClouds(upcoming: boolean = false): Phaser.Sprite {
         const clouds = this.game.add.sprite(0, 0, Images.ImagesClouds.getName(), null, this);
         clouds.x = this.game.world.centerX - clouds.width / 2;
+        clouds.alpha = 0.5;
         if (upcoming) {
             clouds.y = this.currentClouds.y - clouds.height;
         } else {

@@ -8,13 +8,14 @@ export class Platforms extends Phaser.Group {
     private platformWidth = 200;
     private platformHeight = 80;
     private marginBottom = 40;
-    private speed = 10;
+    private speed = 7;
     private stopX: number;
     private startX: number;
     private direction = 1;
     private platformsArr: PlatformInfo[];
     private isWorking = true;
-    private platformDeepness = 15;
+    private platformXDeepness = 50;
+    private platformYDeepness = 15;
 
     constructor(private groundY: number, game: Phaser.Game, parent: PIXI.DisplayObjectContainer) {
         super(game, parent);
@@ -24,10 +25,16 @@ export class Platforms extends Phaser.Group {
         this.game.time.events.loop(Phaser.Timer.SECOND * 1.2, this.createPlatform, this);
     }
 
+    public getDeepness(): {[key: string]: number} {
+        return {
+            x: this.platformXDeepness,
+            y: this.platformYDeepness
+        };
+    }
+
     public getPlatformBounds(index: number): Rectangle {
         let bounds = this.platformsArr[index].platform.getBounds();
-        bounds.x = this.platformsArr[index].platform.worldPosition.x;
-        bounds.y -= this.game.world.y - this.platformDeepness;
+        bounds.y -= this.game.world.y - this.platformYDeepness;
         return bounds;
     }
 
@@ -50,9 +57,9 @@ export class Platforms extends Phaser.Group {
     private changeDirection(): void {
         this.direction *= -1;
         if (this.direction > 0) {
-            this.startX = 0 - this.platformWidth;
+            this.startX = 0 - this.platformWidth / 2;
         } else {
-            this.startX = this.game.world.width;
+            this.startX = this.game.world.width + this.platformWidth / 2;
         }
     }
 
@@ -63,6 +70,7 @@ export class Platforms extends Phaser.Group {
         const frame = this.game.rnd.integerInRange(0, 3);
         this.groundY -= this.platformHeight + this.marginBottom;
         const platform = this.game.add.sprite(this.startX, this.groundY, Spritesheets.SpritesClouds20080.getName(), frame, this);
+        platform.alpha = 0.9;
         platform.anchor.set(0.5, 0);
         this.platformsArr.push({
             speed: this.speed,
