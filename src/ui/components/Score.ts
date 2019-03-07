@@ -6,16 +6,16 @@ export class Score {
     private pulseTween: Phaser.Tween;
 
     constructor(private game: Phaser.Game, parent: PIXI.DisplayObjectContainer) {
-        const marginTop = 40;
+        const marginTop = 80;
         const fontStyle = {
             fontSize: 60,
-            fill: '#BCA2CD',
+            fill: '#ffffff',
             font: CustomWebFonts.FontsFreeh521Freeh521.getName()
         };
-        this.scoreText = this.game.add.text(0, marginTop, this.score.toString(), fontStyle);
-        this.scoreText.x = this.game.world.centerX;
+        this.scoreText = this.game.add.text(this.game.world.centerX, marginTop, this.score.toString(), fontStyle);
+        this.scoreText.anchor.set(0.5, 0.5);
         this.pulseTween = this.game.add.tween(this.scoreText.scale);
-        this.pulseTween.to({x: 1.1, y: 1.1}, 50, Phaser.Easing.Linear.None, false, 0, 0, true);
+        this.pulseTween.to({x: 1.3, y: 1.3}, 50, Phaser.Easing.Linear.None, false, 0, 0, true);
     }
 
     public addScore(score: number = 1): void {

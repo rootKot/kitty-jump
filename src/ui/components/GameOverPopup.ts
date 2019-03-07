@@ -33,7 +33,7 @@ export class GameOverPopup extends Phaser.Group {
             this.replayBtnListener, this, 1, 0, 1, 1, this);
 
         const x = this.popup.width / 2 - this.replayBtn.width / 2;
-        const y = this.gameOverImage.y + this.gameOverImage.height + 50;
+        const y = this.gameOverImage.y + this.gameOverImage.height + 70;
         this.replayBtn.position.set(x, y);
 
     }

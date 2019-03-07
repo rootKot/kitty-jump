@@ -8,8 +8,8 @@ export class Platforms extends Phaser.Group {
     private platformWidth = 200;
     private platformHeight = 80;
     private marginBottom = 40;
-    private speed = 7;
-    private stopX: number;
+    private speed = 6;
+    private readonly stopX: number;
     private startX: number;
     private direction = 1;
     private platformsArr: PlatformInfo[];
@@ -25,17 +25,11 @@ export class Platforms extends Phaser.Group {
         this.game.time.events.loop(Phaser.Timer.SECOND * 1.2, this.createPlatform, this);
     }
 
-    public getDeepness(): {[key: string]: number} {
+    public getDeepness(): { [key: string]: number } {
         return {
             x: this.platformXDeepness,
             y: this.platformYDeepness
         };
-    }
-
-    public getPlatformBounds(index: number): Rectangle {
-        let bounds = this.platformsArr[index].platform.getBounds();
-        bounds.y -= this.game.world.y - this.platformYDeepness;
-        return bounds;
     }
 
     public getPlatformsArr(): PlatformInfo[] {
@@ -47,7 +41,9 @@ export class Platforms extends Phaser.Group {
         AudioManager.i.play(Audiosprites.AudiospritesSounds.Sprites.Land);
 
         const platformShakeTween = this.game.add.tween(this.platformsArr[index].platform.scale);
-        platformShakeTween.to({x: 1.05, y: 1.05}, 20, Phaser.Easing.Linear.None, true, 0, 0, true);
+        platformShakeTween.to({x: 1.08, y: 1.08}, 40, Phaser.Easing.Linear.None, true, 0, 0, true);
+
+        this.speed += 0.1;
     }
 
     public stopAll(): void {

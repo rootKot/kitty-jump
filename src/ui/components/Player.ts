@@ -3,12 +3,9 @@ import {AudioManager} from '../../managers/AudioManager';
 
 export class Player extends Phaser.Group {
     public jumpPower = 0;
-    public jumpSpeed = 10;
     public isJumping = true;
     public isAlive = true;
     public player: Phaser.Sprite;
-    private playerWidth = 140;
-    private playerHeight = 210;
     private jumpTween: Phaser.Tween;
     private alreadyAnimated = false;
 
@@ -32,12 +29,12 @@ export class Player extends Phaser.Group {
         this.isJumping = true;
         this.alreadyAnimated = false;
         this.jumpTweenStart(0.8, 1.3, 80);
-        this.jumpPower = -12;
+        this.jumpPower = -20;
         this.player.play('jump');
     }
 
     private fall(): void {
-        this.jumpTweenStart(1.1, 0.8, 120);
+        this.jumpTweenStart(1.1, 0.8, 150);
         this.alreadyAnimated = true;
         this.jumpPower = 0;
         this.player.play('fall');
@@ -71,7 +68,6 @@ export class Player extends Phaser.Group {
         super.update();
 
         if (this.isAlive && this.isJumping && !this.alreadyAnimated && this.jumpPower > 0) {
-            console.log('fall');
             this.fall();
         }
     }

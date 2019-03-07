@@ -20,6 +20,7 @@ export class GameScreen extends Phaser.Group {
     private keyBinds: KeyBinds;
     private tapToStartText: Phaser.Text;
     private gameStarted = false;
+    private readonly gravity = 0.55;
 
     constructor(game: Phaser.Game, parent: PIXI.DisplayObjectContainer) {
         super(game, parent);
@@ -96,7 +97,7 @@ export class GameScreen extends Phaser.Group {
         this.platforms.y -= y;
         this.player.y -= y;
         this.ground.y -= y;
-        this.background.changeY(y / 2);
+        this.background.changeY(y / 3);
 
     }
 
@@ -135,7 +136,6 @@ export class GameScreen extends Phaser.Group {
     }
 
     private checkPlatformCollision(platformObj: PlatformInfo, index: number): void {
-        // const platformBounds = this.platforms.getPlatformBounds(index);
         const platformDeepness = this.platforms.getDeepness();
 
         if (((this.player.x + this.player.player.width / 2) > (platformObj.platform.worldPosition.x - platformObj.platform.width / 2 + platformDeepness.x)) &&
@@ -145,6 +145,7 @@ export class GameScreen extends Phaser.Group {
                 ((this.player.y - this.player.player.height) < (platformObj.platform.worldPosition.y + platformObj.platform.height))) {
 
                 if (this.player.y < platformObj.platform.worldPosition.y + platformDeepness.y + 20) {
+                    // 20 is for fixing problem with quick falling
                     if (this.player.isJumping) {
                         this.player.onGround();
                         this.score.addScore();
@@ -166,7 +167,7 @@ export class GameScreen extends Phaser.Group {
         }
 
         if (this.player.isJumping) {
-            this.player.jumpPower += 0.3;
+            this.player.jumpPower += this.gravity;
             this.player.y += this.player.jumpPower;
             if (this.player.y < this.game.world.centerY) this.updateWorldY(this.player.jumpPower);
         }

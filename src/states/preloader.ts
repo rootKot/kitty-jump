@@ -1,4 +1,3 @@
-import * as Assets from '../assets';
 import * as AssetUtils from '../utils/assetUtils';
 import {AudioManager} from '../managers/AudioManager';
 import {LoadingScreen} from '../ui/LoadingScreen';

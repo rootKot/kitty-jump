@@ -21,6 +21,11 @@ export namespace Images {
 
         static getPNG(): string { return require('assets/images/ground.png'); }
     }
+    export class ImagesLoadingBackground {
+        static getName(): string { return 'loadingBackground'; }
+
+        static getPNG(): string { return require('assets/images/loadingBackground.png'); }
+    }
     export class ImagesPopup {
         static getName(): string { return 'popup'; }
 
