@@ -1,6 +1,9 @@
 import {CustomWebFonts} from '../../assets';
+import {ScoreManager} from '../../managers/ScoreManager';
+import {PlatformProps, PlatformInfo} from '../../models/interfaces/PlatformInfo';
 
 export class Score {
+    public bestScoreGraphics: Phaser.Graphics;
     private score = 0;
     private scoreText: Phaser.Text;
     private pulseTween: Phaser.Tween;
@@ -20,11 +23,35 @@ export class Score {
 
     public addScore(score: number = 1): void {
         this.score += score;
+        ScoreManager.i.setScore(this.score);
         this.scoreText.setText(this.score.toString());
 
         this.pulseTween.stop();
         this.scoreText.scale.set(1, 1);
         this.pulseTween.start();
+    }
+
+    public initBestScoreLine(platformProps: PlatformProps): void {
+        const scoreInfo = ScoreManager.i.getBestScore();
+        if (scoreInfo.bestScore === 0) return;
+
+        const y = platformProps.groundY - scoreInfo.bestScore * (platformProps.platformHeight + platformProps.marginBottom);
+        this.bestScoreGraphics = this.game.add.graphics(0, y);
+        this.bestScoreGraphics.lineStyle(2, 0xbca2cd, 0.8);
+        this.bestScoreGraphics.lineTo(this.game.world.width, 0);
+
+        const fontStyle = {
+            fill: '#ffffff',
+            fontSize: 24,
+            fontWeight: 100
+        };
+        const bestScoreText = this.game.add.text(
+            this.game.world.centerX - platformProps.platformWidth * 2, 0, 'Best Score', fontStyle);
+        bestScoreText.anchor.set(1, 1);
+        bestScoreText.alpha = 0.8;
+        this.bestScoreGraphics.addChild(bestScoreText);
+        this.game.add.tween(this.bestScoreGraphics).to({alpha: 0}, 800, Phaser.Easing.Linear.None,
+            true, 0, -1, true);
     }
 }
 

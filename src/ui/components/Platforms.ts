@@ -1,8 +1,6 @@
-import Rectangle = PIXI.Rectangle;
-import {PlatformInfo} from '../../models/interfaces/PlatformInfo';
+import {PlatformInfo, PlatformProps} from '../../models/interfaces/PlatformInfo';
 import {Audiosprites, Spritesheets} from '../../assets';
 import {AudioManager} from '../../managers/AudioManager';
-
 
 export class Platforms extends Phaser.Group {
     private platformWidth = 200;
@@ -25,6 +23,15 @@ export class Platforms extends Phaser.Group {
         this.game.time.events.loop(Phaser.Timer.SECOND * 1.2, this.createPlatform, this);
     }
 
+    public getPlatformProps(): PlatformProps {
+        return {
+            groundY: this.groundY,
+            platformWidth: this.platformWidth,
+            platformHeight: this.platformHeight,
+            marginBottom: this.marginBottom
+        };
+    }
+
     public getDeepness(): { [key: string]: number } {
         return {
             x: this.platformXDeepness,
@@ -41,7 +48,8 @@ export class Platforms extends Phaser.Group {
         AudioManager.i.play(Audiosprites.AudiospritesSounds.Sprites.Land);
 
         const platformShakeTween = this.game.add.tween(this.platformsArr[index].platform.scale);
-        platformShakeTween.to({x: 1.08, y: 1.08}, 40, Phaser.Easing.Linear.None, true, 0, 0, true);
+        platformShakeTween.to({x: 1.08, y: 1.08}, 40, Phaser.Easing.Linear.None,
+            true, 0, 0, true);
 
         this.speed += 0.1;
     }

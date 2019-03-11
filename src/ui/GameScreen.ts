@@ -97,13 +97,15 @@ export class GameScreen extends Phaser.Group {
         this.platforms.y -= y;
         this.player.y -= y;
         this.ground.y -= y;
+        this.score.bestScoreGraphics.y -= y;
         this.background.changeY(y / 3);
-
     }
 
     private startGame(): void {
         this.gameStarted = true;
         this.initPlatforms();
+        const platformProps = this.platforms.getPlatformProps();
+        this.score.initBestScoreLine(platformProps);
 
         this.game.add.tween(this.tapToStartText).to(
             {y: 0 - this.tapToStartText.height}, 500, Phaser.Easing.Elastic.In, true);
@@ -145,7 +147,7 @@ export class GameScreen extends Phaser.Group {
                 ((this.player.y - this.player.player.height) < (platformObj.platform.worldPosition.y + platformObj.platform.height))) {
 
                 if (this.player.y < platformObj.platform.worldPosition.y + platformDeepness.y + 20) {
-                    // 20 is for fixing problem with quick falling
+                    // 20 is for fixing problem when player fall faster
                     if (this.player.isJumping) {
                         this.player.onGround();
                         this.score.addScore();
