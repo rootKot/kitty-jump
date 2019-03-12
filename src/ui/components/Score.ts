@@ -33,7 +33,6 @@ export class Score {
 
     public initBestScoreLine(platformProps: PlatformProps): void {
         const scoreInfo = ScoreManager.i.getBestScore();
-        if (scoreInfo.bestScore === 0) return;
 
         const y = platformProps.groundY - scoreInfo.bestScore * (platformProps.platformHeight + platformProps.marginBottom);
         this.bestScoreGraphics = this.game.add.graphics(0, y);
@@ -52,6 +51,9 @@ export class Score {
         this.bestScoreGraphics.addChild(bestScoreText);
         this.game.add.tween(this.bestScoreGraphics).to({alpha: 0}, 800, Phaser.Easing.Linear.None,
             true, 0, -1, true);
+
+        if (scoreInfo.bestScore === 0) this.bestScoreGraphics.visible = false;
+
     }
 }
 
