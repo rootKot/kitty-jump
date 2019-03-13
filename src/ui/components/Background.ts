@@ -6,7 +6,7 @@ export class Background extends Phaser.Group {
 
     constructor(game: Phaser.Game, parent: PIXI.DisplayObjectContainer) {
         super(game, parent);
-        this.game.add.sprite(0, 0, Images.ImagesSky1.getName(), null, this);
+        this.game.add.sprite(0, 0, Images.ImagesSky1R1280x720.getName(), null, this);
         this.currentClouds = this.createClouds();
         this.upcomingClouds = this.createClouds(true);
     }

@@ -36,6 +36,11 @@ export namespace Images {
 
         static getPNG(): string { return require('assets/images/sky1.png'); }
     }
+    export class ImagesSky1R1280x720 {
+        static getName(): string { return 'sky1R1280x720'; }
+
+        static getPNG(): string { return require('assets/images/sky1R1280x720.png'); }
+    }
 }
 
 export namespace Spritesheets {

@@ -37,7 +37,7 @@ function startApp(): void {
     let gameConfig: Phaser.IGameConfig = {
         width: gameWidth,
         height: gameHeight,
-        renderer: Phaser.AUTO,
+        renderer: Phaser.CANVAS,
         parent: '',
         resolution: 1
     };
